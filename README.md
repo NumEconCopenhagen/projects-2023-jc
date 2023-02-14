@@ -1,8 +1,8 @@
-# \[Group name\]
+# \[JC\]
 
 **Group members:**
-- A
-- B
+- Josefine Strecker
+- Camilla Månsson
 - C
 
 This repository contains  
