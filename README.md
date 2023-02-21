@@ -1,9 +1,9 @@
-# \[JC\]
+# \[JCS\]
 
 **Group members:**
 - Josefine Strecker
 - Camilla Månsson
-- C
+- Sara Kilic
 
 This repository contains  
 1. Inaugural project. 
