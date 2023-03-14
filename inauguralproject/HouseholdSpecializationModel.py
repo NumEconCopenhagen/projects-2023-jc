@@ -133,5 +133,3 @@ class HouseholdSpecializationModelClass:
 
         pass
 
-#Question 1
-
