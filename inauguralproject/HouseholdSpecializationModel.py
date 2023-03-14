@@ -1,4 +1,3 @@
-
 from types import SimpleNamespace
 
 import numpy as np
@@ -6,6 +5,8 @@ from scipy import optimize
 
 import pandas as pd 
 import matplotlib.pyplot as plt
+
+from scipy.optimize import minimize, minimize_scalar
 
 class HouseholdSpecializationModelClass:
 
@@ -131,3 +132,6 @@ class HouseholdSpecializationModelClass:
         """ estimate alpha and sigma """
 
         pass
+
+#Question 1
+
