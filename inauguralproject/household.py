@@ -139,6 +139,26 @@ class HouseholdSpecializationModelClass:
     def estimate(self,alpha=None,sigma=None):
         """ estimate alpha and sigma """
 
+        par = self.par
+        sol = self.sol
+
+            def objective(x):
+                par.alpha = x[1]
+                par.sigma = x[0]
+                self.solve_wF_vec()
+                self.run_regression()
+                return((par_beta0_target - sol.beta0)**2 + (par.beta1_target - sol.beta1)**2)
+        
+            obj = lambda x: objective(x)
+            guess = [0.5]*2
+            bounds = [(-0.00001,1)]*2
+            # ii optimizer
+            result = optimize.minimize(obj, 
+                                       guess, 
+                                       method = 'Nelder-Mead',
+                                       bounds = bounds)
+            return result
+
         pass
 
     def __init__(self, a, w, p, v, wm, wf, sigma_m, sigma_f, beta0, beta1, L_M, W_M, H_M, epsilon):
