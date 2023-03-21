@@ -115,7 +115,7 @@ class HouseholdSpecializationModelClass:
 
     def solve(self,do_print=False):
         """ solve model continously """
-         par = self.par
+        par = self.par
         sol = self.sol
         opt = SimpleNamespace()
 
