@@ -56,14 +56,12 @@ class HouseholdSpecializationModelClass:
         C = par.wM*LM + par.wF*LF
 
         # b. home production
-        # H = min virker ikke, skal der lige kigges på 
-        if par.sigma==0:
-            H = min(HM, HF)
-        elif par.sigma==1:
+        if par.sigma == 1:
             H = HM**(1-par.alpha)*HF**par.alpha
+        elif par.sigma == 0:
+            H = np.min(HM, HF)
         else:
-            H = ((1-par.alpha)*HM**((par.sigma-1)/par.sigma)+par.alpha*HF**((par.sigma)/par.sigma))**(par.sigma/(par.sigma-1))
-
+            H = ((1-par.alpha)*HM**((par.sigma-1)/par.sigma)+par.alpha*HF**((par.sigma-1)/par.sigma))**(par.sigma/(par.sigma-1))
 
         # c. total consumption utility
         Q = C**par.omega*H**(1-par.omega)
@@ -117,11 +115,69 @@ class HouseholdSpecializationModelClass:
 
     def solve(self,do_print=False):
         """ solve model continously """
+         par = self.par
+        sol = self.sol
+        opt = SimpleNamespace()
+
+        def objective(x):
+            return -self.calc_utility(x[0], x[1], x[2], x[3])
+
+        obj = lambda x: objective(x)
+        guess = [4]*4
+        bounds = [(0,24)]*4
+        constraints = ({'type': 'ineq', 'fun': lambda x: 24 - (x[0]+x[1])},{'type': 'ineq', 'fun': lambda x: 24 - (x[2]+x[3])})
+        # ii. optimizer
+        result = optimize.minimize(obj,
+                            guess,
+                            method='Nelder-Mead',
+                            bounds=bounds,
+                            constraints=constraints)
+        
+        opt.LM = result.x[0]
+        opt.HM = result.x[1]
+        opt.LF = result.x[2]
+        opt.HF = result.x[3]
+        opt.u =self.calc_utility(opt.LM, opt.HM, opt.LF, opt.HF)
+
+        if do_print:
+            for k,v in opt.__dict__.items():
+                print(f'{k} = {v:6.4f}')
+
+        return opt
 
         pass    
 
     def solve_wF_vec(self,discrete=False):
         """ solve model for vector of female wages """
+        par = self.par
+        sol = self.sol
+        opt = SimpleNamespace()
+
+        def objective(x):
+            return -self.calc_utility(x[0], x[1], x[2], x[3])
+
+        obj = lambda x: objective(x)
+        guess = [4]*4
+        bounds = [(0,24)]*4
+        constraints = ({'type': 'ineq', 'fun': lambda x: 24 - (x[0]+x[1])},{'type': 'ineq', 'fun': lambda x: 24 - (x[2]+x[3])})
+        # ii. optimizer
+        result = optimize.minimize(obj,
+                            guess,
+                            method='Nelder-Mead',
+                            bounds=bounds,
+                            constraints=constraints)
+        
+        opt.LM = result.x[0]
+        opt.HM = result.x[1]
+        opt.LF = result.x[2]
+        opt.HF = result.x[3]
+        opt.u =self.calc_utility(opt.LM, opt.HM, opt.LF, opt.HF)
+
+        if do_print:
+            for k,v in opt.__dict__.items():
+                print(f'{k} = {v:6.4f}')
+
+        return opt
 
         pass
 
