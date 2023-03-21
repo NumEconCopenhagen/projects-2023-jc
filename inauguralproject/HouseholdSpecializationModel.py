@@ -71,7 +71,7 @@ class HouseholdSpecializationModelClass:
             else:
                 H_M_values[i,j,H] = ((1-a)*((H/2)**(sigma-1)/sigma)+a*((24-H)/2)**(sigma-1)/sigma)**(1/(sigma-1))
 >>>>>>> cd10559ff36f6a3a1c03d73712ed22ce9f8ff674
-
+  
         # c. total consumption utility
         Q = C**par.omega*H**(1-par.omega)
         utility = np.fmax(Q,1e-8)**(1-par.rho)/(1-par.rho)
