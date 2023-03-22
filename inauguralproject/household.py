@@ -125,7 +125,7 @@ class HouseholdSpecializationModelClass:
         obj = lambda x: objective(x)
         guess = [4]*4
         bounds = [(0,24)]*4
-        constraints = ({'type': 'ineq', 'fun': lambda x: 24 - (x[0]+x[1])},{'type': 'ineq', 'fun': lambda x: 24 - (x[2]+x[3])})
+        constraints = ({'type': 'ineq', 'fun': lambda x: 24 - x[0] - x[1]},{'type': 'ineq', 'fun': lambda x: 24 - x[2] - x[3]})
         # ii. optimizer
         result = optimize.minimize(obj,
                             guess,
@@ -139,6 +139,7 @@ class HouseholdSpecializationModelClass:
         opt.HF = result.x[3]
         opt.u =self.calc_utility(opt.LM, opt.HM, opt.LF, opt.HF)
 
+        # e. print
         if do_print:
             for k,v in opt.__dict__.items():
                 print(f'{k} = {v:6.4f}')
@@ -152,33 +153,24 @@ class HouseholdSpecializationModelClass:
         par = self.par
         sol = self.sol
         opt = SimpleNamespace()
-
-        def objective(x):
-            return -self.calc_utility(x[0], x[1], x[2], x[3])
-
-        obj = lambda x: objective(x)
-        guess = [4]*4
-        bounds = [(0,24)]*4
-        constraints = ({'type': 'ineq', 'fun': lambda x: 24 - (x[0]+x[1])},{'type': 'ineq', 'fun': lambda x: 24 - (x[2]+x[3])})
-        # ii. optimizer
-        result = optimize.minimize(obj,
-                            guess,
-                            method='Nelder-Mead',
-                            bounds=bounds,
-                            constraints=constraints)
-        
-        opt.LM = result.x[0]
-        opt.HM = result.x[1]
-        opt.LF = result.x[2]
-        opt.HF = result.x[3]
-        opt.u =self.calc_utility(opt.LM, opt.HM, opt.LF, opt.HF)
-
-        if do_print:
-            for k,v in opt.__dict__.items():
-                print(f'{k} = {v:6.4f}')
-
-        return opt
-
+      
+        for i, wF in enumerate(self.par.wF_vec):
+            par.wF = wF #set wF value
+            
+            if discrete==False:
+                opt = self.solve() #Optimal allocation solution
+            elif discrete==True:
+                opt = self.solve_discrete()
+            else:
+                print("discrete must be True or False")
+                
+            sol.LM_vec[i] = opt.LM
+            sol.HM_vec[i] = opt.HM
+            sol.LF_vec[i] = opt.LF
+            sol.HF_vec[i] = opt.HF
+            
+        return sol
+    
         pass
 
     def run_regression(self):
