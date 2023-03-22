@@ -113,7 +113,7 @@ class HouseholdSpecializationModelClass:
 
         return opt
 
-    def solve(self,do_print=False):
+    def solve_con(self,do_print=False):
         """ solve model continously """
         par = self.par
         sol = self.sol
