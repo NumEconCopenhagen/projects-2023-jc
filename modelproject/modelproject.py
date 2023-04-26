@@ -60,13 +60,7 @@ def find_catch_up_time(y_A, y_B):
             return t
     return None
 
-catch_up_time = find_catch_up_time(y_A, y_B)
-if catch_up_time is not None:
-    print(f"Country B will catch up with Country A in terms of income per worker in {catch_up_time} years.")
-else:
-    print("Country B will not catch up with Country A in terms of income per worker within the simulated time period.")
 
-# The result gives us an indication of whether the B will catch up with Country A within the simulated time period
 
 #d)
 
