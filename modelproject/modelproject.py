@@ -13,6 +13,11 @@ params = {
 # Cf exersice description the 'Total factor productivity (A)' is assumed to be constant
 total_factor_productivity = 1
 
+#Create a dataframe with the chosen values for the different parametsers
+dataframe = {'': ['Country A', 'Country B'], 'Saving(s)': [0.25 , 0.35], 'Depriciation(δ)': [0.05 , 0.04], 'Population growth(n)': [0.02 , 0.01], 'Capital share(α)': [0.33, 0.40], 'Capital per worker (k_0)': [1.00, 0.80]}
+
+df = pd.DataFrame(dataframe)
+
 
 #a) 
 
@@ -86,6 +91,7 @@ s_values = np.linspace(0.01, 0.5, 100)
 k_star_values_A, y_star_values_A = analyze_sensitivity_savings_rate(params["A"], total_factor_productivity, s_values)
 
 
+
 # e)
 
 def analyze_sensitivity_depreciation_rate(params, A, delta_values):
@@ -106,12 +112,7 @@ delta_values_specific = [0.02, 0.05, 0.08]
 # Analyze the sensitivity of steady-state capital per worker (k*) and output per worker (y*) to the depreciation rate (δ) for Country A
 k_star_values_A_delta_specific, y_star_values_A_delta_specific = analyze_sensitivity_depreciation_rate(params["A"], total_factor_productivity, delta_values_specific)
 
-# Print the steady-state values for each depreciation rate
-for i, delta in enumerate(delta_values_specific):
-    print(f"Depreciation rate (δ) = {delta}:")
-    print(f"  Country A: Steady-state capital per worker (k*) = {k_star_values_A_delta_specific[i]}")
-    print(f"  Country A: Steady-state output per worker (y*) = {y_star_values_A_delta_specific[i]}")
-    print()
+
 
 # Set the above result up in a Table (2)
 
@@ -128,8 +129,8 @@ table_2 = pd.DataFrame(data)
 # Set the index to start from 1 instead of 0 (as python usually does)
 table_2.index += 1
 
-# Print the table
-print("Table 2. Sensitivity Analysis of Steady-state Capital per Worker and Output per Worker to Depreciation Rate for Country A")
-print(table_2)
+
+
+
 
 
