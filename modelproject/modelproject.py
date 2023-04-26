@@ -13,6 +13,7 @@ params = {
 # Cf exersice description the 'Total factor productivity (A)' is assumed to be constant
 total_factor_productivity = 1
 
+
 #a) 
 
 # Function to calculate steadystate capital per worker (k^*) and output per worker (y^*)
