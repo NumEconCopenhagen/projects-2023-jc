@@ -18,7 +18,6 @@ dataframe = {'': ['Country A', 'Country B'], 'Saving(s)': [0.25 , 0.35], 'Depric
 
 df = pd.DataFrame(dataframe)
 
-
 #a) 
 
 # Function to calculate steadystate capital per worker (k^*) and output per worker (y^*)
@@ -119,8 +118,8 @@ k_star_values_A_delta_specific, y_star_values_A_delta_specific = analyze_sensiti
 # Create a dictionary with the data
 data = {
     "Depreciation Rate (δ)": delta_values_specific,
-    "Country A: Steady-state Capital per Worker (k*)": k_star_values_A_delta_specific,
-    "Country A: Steady-state Output per Worker (y*)": y_star_values_A_delta_specific
+    "Capital per Worker (k*)": k_star_values_A_delta_specific,
+    "Output per Worker (y*)": y_star_values_A_delta_specific
 }
 
 # Create a DataFrame using the data dictionary
