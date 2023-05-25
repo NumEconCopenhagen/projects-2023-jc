@@ -19,6 +19,10 @@ sigma_values = [0.001, 1.5]
 rho_values = [1.001, 1.5]
 epsilon = 1.0
 
+#Define the utility function
+def utility(L, G, alpha, v):
+    return np.log(L**alpha * G**(1 - alpha)) - v * L**2 / 2
+
 # Calculate w_tilde
 w_tilde = (1 - tau) * w
 
@@ -65,6 +69,17 @@ result = minimize(negative_utility, 0.5, bounds=[(0.1, 0.9)])
 optimal_tau = result.x[0]
 print(f"The socially optimal tax rate is {optimal_tau}")
 
+# Plot the utility as a function of tau
+utilities = [utility(optimal_labor_supply((1 - tau) * w, kappa, alpha, v), G, alpha, v) for tau in tau_values]
+plt.figure(figsize=(10, 6))
+plt.plot(tau_values, utilities)
+plt.xlabel('tau')
+plt.ylabel('Utility')
+plt.title('Worker Utility for Different Tau Values')
+plt.axvline(x=optimal_tau, color='r', linestyle='--', label=f'Optimal tau = {optimal_tau}')
+plt.legend()
+plt.grid(True)
+plt.show
 
 ##CHAT BESKRIVER KODERNE FRA 2-4 SÅDAN HER
 #This code extends the previous code by adding plots 
@@ -257,3 +272,4 @@ print(f"The ex ante expected value of the salon with the alternative policy is {
 # a hiring or firing decision is made; otherwise, the previous labor supply is 
 # maintained. The code then calculates the value of H using this alternative policy by 
 # following a similar process as in Question 4.#
+
