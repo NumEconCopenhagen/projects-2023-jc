@@ -177,21 +177,6 @@ for k in range(K):
 H = np.mean(H_values)
 print(f"The ex ante expected value of the salon is {H}")
 
-
-#This code first sets up the parameters as given in the problem. 
-# It then defines a function optimal_labor_supply that calculates the optimal 
-# labor supply given kappa, eta, and w, and a function profits that calculates 
-# the profits given kappa, l, eta, and w. It verifies numerically that the 
-# optimal labor supply choice maximizes profits for each kappa in kappa_values.
-
-#Question 2, it generates K random shock series epsilon_series and calculates 
-# the corresponding kappa_series. It then calculates the ex ante expected value 
-# of the salon H by summing the discounted profits for each period and each 
-# shock series, taking into account the adjustment cost iota if the labor 
-# supply choice changes from the previous period. The expected value is 
-# then approximated by the mean of these total profits over all shock series.
-
-
 # Define the function for the policy
 def policy(l_prev, l_star, Delta):
     return l_star if abs(l_prev - l_star) > Delta * abs(l_prev) else l_prev
@@ -249,24 +234,6 @@ for k in range(K):
     H_values.append(total_profit)
 H = np.mean(H_values)
 print(f"The ex ante expected value of the salon with the alternative policy is {H}")
-
-#Question 4: we are finding the optimal Delta value that maximizes the 
-# value of H. The function negative_H(Delta) calculates the average value 
-# of H for a given Delta value. It iterates through the shock series and 
-# calculates the total profit by following the given policy with the Delta value.
-#  The negative sign is used because we are using the minimize function to find 
-# the maximum of H. The minimize function from the SciPy library is used to 
-# find the minimum of the negative_H function, which essentially finds the maximum 
-# of H. The result contains the optimal Delta value, which is then printed.
-
-#In Question 5, an alternative policy is suggested to improve profitability. 
-# The function alternative_policy(l_prev, l_star, Delta) is defined, which 
-# determines whether to hire or fire hairdressers based on the difference between 
-# the previous labor supply l_prev and the optimal labor supply l_star. 
-# If the difference is greater than Delta times the absolute value of l_star, 
-# a hiring or firing decision is made; otherwise, the previous labor supply is 
-# maintained. The code then calculates the value of H using this alternative policy by 
-# following a similar process as in Question 4.#
 
 
 
