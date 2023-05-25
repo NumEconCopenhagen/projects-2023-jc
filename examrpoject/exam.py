@@ -46,10 +46,11 @@ plt.grid(True)
 plt.show()
 
 # Question 3: Plot the implied L, G, and worker utility for a grid of tau-values
-L_values = [optimal_labor_supply((1 - tau) * w, kappa, alpha, v) for tau in tau_values]
-utilities = [utility(L, G, alpha, v) for L, G in zip(L_values, G_values)]
+#Defining the new G
+G_values = [tau * w * L_star*((1-tau)*w) for tau, L_star in zip(tau_values, L_star_values)]  # Calculate G for each tau
+utilities = [utility(L, G, alpha, v) for L, G in zip(L_star_values, G_values)]
 plt.figure(figsize=(10, 6))
-plt.plot(tau_values, L_values, label='L')
+plt.plot(tau_values, L_star_values, label='L')
 plt.plot(tau_values, G_values, label='G')
 plt.plot(tau_values, utilities, label='Utility')
 plt.xlabel('tau')
