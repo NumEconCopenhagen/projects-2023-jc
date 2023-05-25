@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 from scipy.optimize import fsolve
+from scipy.stats import norm
 
 #Problem 1
 
@@ -18,36 +19,18 @@ sigma_values = [0.001, 1.5]
 rho_values = [1.001, 1.5]
 epsilon = 1.0
 
-
 # Calculate w_tilde
 w_tilde = (1 - tau) * w
 
 # Define the function for optimal labor supply choice
 def optimal_labor_supply(w_tilde, kappa, alpha, v):
-    return -kappa * np.sqrt(kappa**2 + 4 * (alpha/v) * w_tilde**2) / (2 * w_tilde)
+    return -kappa * np.sqrt(kappa**2 + 4 * alpha/v * w_tilde) / (2 * w_tilde)
 
 # Calculate optimal labor supply for each G
 for G in G_values:
     L_star = optimal_labor_supply(w_tilde, kappa, alpha, v)
     print(f"For G = {G}, the optimal labor supply choice is {L_star}")
-
-
-# "CHAT FORKLARE KODEN SÅDAN (MEN VED IKKE OM DET SKAL MED":
-
-#This code first sets up the parameters as given in the problem.
-#  It then defines a function optimal_labor_supply that calculates 
-# the optimal labor supply given w_tilde, kappa, alpha, and v. 
-# Finally, it calculates and prints the optimal labor supply for each value of G in G_values.
-
-
-# Define the utility function
-def utility(L, G, alpha, v):
-    return np.log(L**alpha * G**(1 - alpha)) - v * L**2 / 2
-
-# Define the function for optimal labor supply choice
-def optimal_labor_supply(w_tilde, kappa, alpha, v):
-    return -kappa * np.sqrt(kappa**2 + 4 * (alpha/v) * w_tilde**2) / (2 * w_tilde)
-
+    
 # Question 2: Illustrate how L*(w_tilde) depends on w
 L_star_values = [optimal_labor_supply((1 - tau) * w, kappa, alpha, v) for w in w_values]
 plt.figure(figsize=(10, 6))
@@ -129,3 +112,131 @@ for sigma, rho in zip(sigma_values, rho_values):
 # Finally, it finds the socially optimal tax rate tau* that maximizes
 #  worker utility while keeping the equilibrium condition, again for each 
 # set of sigma and rho values.
+
+
+
+
+#Problem 2
+import numpy as np
+from scipy.stats import norm
+
+# Set up the parameters
+eta = 0.5
+w = 1.0
+kappa_values = [1.0, 2.0]
+rho = 0.9
+iota = 0.01
+sigma_epsilon = 0.1
+R = (1 + 0.01)**(1/12)
+K = 10000  # Number of random shock series
+T = 120  # Number of periods
+
+# Define the function for optimal labor supply choice
+def optimal_labor_supply(kappa, eta, w):
+    return ((1 - eta) * kappa / w)**(1 / eta)
+
+# Define the function for profits
+def profits(kappa, l, eta, w):
+    return kappa * l**(1 - eta) - w * l
+
+# Question 1: Verify numerically that the optimal labor supply choice maximizes profits
+for kappa in kappa_values:
+    l_star = optimal_labor_supply(kappa, eta, w)
+    profit = profits(kappa, l_star, eta, w)
+    print(f"For kappa = {kappa}, the optimal labor supply choice is {l_star} and the profit is {profit}")
+
+# Generate random shock series
+np.random.seed(0)  # For reproducibility
+epsilon_series = np.random.normal(loc=-0.5*sigma_epsilon**2, scale=sigma_epsilon, size=(K, T))
+kappa_series = np.exp(rho * np.log(np.append(np.ones((K, 1)), np.exp(epsilon_series[:, :-1]), axis=1)) + epsilon_series)
+
+# Question 2: Calculate the ex ante expected value of the salon
+H_values = []
+for k in range(K):
+    kappa_k = kappa_series[k, :]
+    l_prev = optimal_labor_supply(kappa_k[0], eta, w)
+    total_profit = profits(kappa_k[0], l_prev, eta, w)
+    for t in range(1, T):
+        l = optimal_labor_supply(kappa_k[t], eta, w)
+        total_profit += R**(-t) * (profits(kappa_k[t], l, eta, w) - (l != l_prev) * iota)
+        l_prev = l
+    H_values.append(total_profit)
+H = np.mean(H_values)
+print(f"The ex ante expected value of the salon is {H}")
+
+
+#IGEN HHER ER DER BESRKIVELSE AF KODERNE FOR DE TO FØRSTE SPØRGSMÅL
+
+#This code first sets up the parameters as given in the problem. 
+# It then defines a function optimal_labor_supply that calculates the optimal 
+# labor supply given kappa, eta, and w, and a function profits that calculates 
+# the profits given kappa, l, eta, and w. It verifies numerically that the 
+# optimal labor supply choice maximizes profits for each kappa in kappa_values.
+
+#Question 2, it generates K random shock series epsilon_series and calculates 
+# the corresponding kappa_series. It then calculates the ex ante expected value 
+# of the salon H by summing the discounted profits for each period and each 
+# shock series, taking into account the adjustment cost iota if the labor 
+# supply choice changes from the previous period. The expected value is 
+# then approximated by the mean of these total profits over all shock series.
+
+
+# Define the function for the policy
+def policy(l_prev, l_star, Delta):
+    return l_star if abs(l_prev - l_star) > Delta * abs(l_prev) else l_prev
+
+# Question 3: Calculate H if the policy above was followed with Delta=0.005
+Delta = 0.005
+H_values = []
+for k in range(K):
+    kappa_k = kappa_series[k, :]
+    l_prev = optimal_labor_supply(kappa_k[0], eta, w)
+    total_profit = profits(kappa_k[0], l_prev, eta, w)
+    for t in range(1, T):
+        l_star = optimal_labor_supply(kappa_k[t], eta, w)
+        l = policy(l_prev, l_star, Delta)
+        total_profit += R**(-t) * (profits(kappa_k[t], l, eta, w) - (l != l_prev) * iota)
+        l_prev = l
+    H_values.append(total_profit)
+H = np.mean(H_values)
+print(f"The ex ante expected value of the salon with Delta = {Delta} is {H}")
+
+# Question 4: Find the optimal Delta maximizing H
+def negative_H(Delta):
+    H_values = []
+    for k in range(K):
+        kappa_k = kappa_series[k, :]
+        l_prev = optimal_labor_supply(kappa_k[0], eta, w)
+        total_profit = profits(kappa_k[0], l_prev, eta, w)
+        for t in range(1, T):
+            l_star = optimal_labor_supply(kappa_k[t], eta, w)
+            l = policy(l_prev, l_star, Delta)
+            total_profit += R**(-t) * (profits(kappa_k[t], l, eta, w) - (l != l_prev) * iota)
+            l_prev = l
+        H_values.append(total_profit)
+    return -np.mean(H_values)
+
+result = minimize(negative_H, 0.005, bounds=[(0.001, 0.01)])
+optimal_Delta = result.x[0]
+print(f"The optimal Delta is {optimal_Delta}")
+
+# Question 5: Suggest an alternative policy you believe might improve profitability. Implement and test your policy.
+# Here, I suggest a policy that hires or fires only if the difference between l_prev and l_star is greater than Delta * l_star instead of Delta * l_prev.
+def alternative_policy(l_prev, l_star, Delta):
+    return l_star if abs(l_prev - l_star) > Delta * abs(l_star) else l_prev
+
+H_values = []
+for k in range(K):
+    kappa_k = kappa_series[k, :]
+    l_prev = optimal_labor_supply(kappa_k[0], eta, w)
+    total_profit = profits(kappa_k[0], l_prev, eta, w)
+    for t in range(1, T):
+        l_star = optimal_labor_supply(kappa_k[t], eta, w)
+        l = alternative_policy(l_prev, l_star, optimal_Delta)
+        total_profit += R**(-t) * (profits(kappa_k[t], l, eta, w) - (l != l_prev) * iota)
+        l_prev = l
+    H_values.append(total_profit)
+H = np.mean(H_values)
+print(f"The ex ante expected value of the salon with the alternative policy is {H}")
+
+
