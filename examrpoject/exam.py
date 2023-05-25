@@ -323,6 +323,7 @@ for i, guess in enumerate(initial_guesses):
     print("Iteration {}, initial guess: {}".format(i, guess))
 
 
+#in 3:
 #We iterate underlined_K times.
 #In each iteration, we first draw a random vector x0 uniformly within the chosen bounds.
 #If the iteration count k is less than K, we proceed with the optimizer and run it with x0 as the initial guess (Step E). The result x^(k*) is obtained from the optimizer.
@@ -333,3 +334,11 @@ for i, guess in enumerate(initial_guesses):
 #Finally, we use the funciton break, which will lead us directly to 4, if f(x^*) < tau
 
 #the optimal solution found suggests that when $x_1$ is approximately -50.24035172 and $x_2$ is approximately 35.50754101, the Griewank function is at its minimum within the defined bounds and given the initial guesses and tolerances.
+
+#4.2
+#to snwer the question: "Is it a better idea to set ▁K=100? Is the convergense faster?"
+# we should just change the value of underlined_K to 100 from 10 and analyze it. 
+#however increasing the iterations of underlined_K can potentially lead to better solutions, as we are sampling more initial points, 
+# increasing the chance of starting near the global minimu
+# But this does not necessarily mean that the convergence will be faster. 
+# In fact, increasing underlined_K will likely increase the total runtime of your program, aswe are performing more optimization runs.
