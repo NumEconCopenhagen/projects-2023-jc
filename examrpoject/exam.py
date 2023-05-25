@@ -24,13 +24,13 @@ w_tilde = (1 - tau) * w
 
 # Define the function for optimal labor supply choice
 def optimal_labor_supply(w_tilde, kappa, alpha, v):
-    return -kappa * np.sqrt(kappa**2 + 4 * alpha/v * w_tilde) / (2 * w_tilde)
+    return (np.sqrt(kappa**2 + 4 * alpha/v * w_tilde**2) - kappa) / (2 * w_tilde)
 
 # Calculate optimal labor supply for each G
 for G in G_values:
     L_star = optimal_labor_supply(w_tilde, kappa, alpha, v)
     print(f"For G = {G}, the optimal labor supply choice is {L_star}")
-    
+
 # Question 2: Illustrate how L*(w_tilde) depends on w
 L_star_values = [optimal_labor_supply((1 - tau) * w, kappa, alpha, v) for w in w_values]
 plt.figure(figsize=(10, 6))
@@ -239,4 +239,21 @@ for k in range(K):
 H = np.mean(H_values)
 print(f"The ex ante expected value of the salon with the alternative policy is {H}")
 
+#IGEN CHAT BESKRIVELSER
+#Question 4: we are finding the optimal Delta value that maximizes the 
+# value of H. The function negative_H(Delta) calculates the average value 
+# of H for a given Delta value. It iterates through the shock series and 
+# calculates the total profit by following the given policy with the Delta value.
+#  The negative sign is used because we are using the minimize function to find 
+# the maximum of H. The minimize function from the SciPy library is used to 
+# find the minimum of the negative_H function, which essentially finds the maximum 
+# of H. The result contains the optimal Delta value, which is then printed.
 
+#In Question 5, an alternative policy is suggested to improve profitability. 
+# The function alternative_policy(l_prev, l_star, Delta) is defined, which 
+# determines whether to hire or fire hairdressers based on the difference between 
+# the previous labor supply l_prev and the optimal labor supply l_star. 
+# If the difference is greater than Delta times the absolute value of l_star, 
+# a hiring or firing decision is made; otherwise, the previous labor supply is 
+# maintained. The code then calculates the value of H using this alternative policy by 
+# following a similar process as in Question 4.#
