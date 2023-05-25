@@ -81,7 +81,6 @@ plt.legend()
 plt.grid(True)
 plt.show
 
-##CHAT BESKRIVER KODERNE FRA 2-4 SÅDAN HER
 #This code extends the previous code by adding plots 
 # for the dependence of optimal labor supply on w and the implied 
 # L, G, and worker utility for a grid of tau values. It also uses 
@@ -119,7 +118,6 @@ for sigma, rho in zip(sigma_values, rho_values):
     print(f"For sigma = {sigma} and rho = {rho}, the socially optimal tax rate is {optimal_tau}")
 
 
-##CHAT BESKRIVER KODERNE FRA 5-6 SÅDAN HER
 #This code extends the previous code by adding the 
 # new utility function and the equilibrium condition. 
 # It then uses scipy.optimize.fsolve to find the G that solves 
@@ -179,8 +177,6 @@ for k in range(K):
 H = np.mean(H_values)
 print(f"The ex ante expected value of the salon is {H}")
 
-
-#IGEN HHER ER DER BESRKIVELSE AF KODERNE FOR DE TO FØRSTE SPØRGSMÅL
 
 #This code first sets up the parameters as given in the problem. 
 # It then defines a function optimal_labor_supply that calculates the optimal 
@@ -254,7 +250,6 @@ for k in range(K):
 H = np.mean(H_values)
 print(f"The ex ante expected value of the salon with the alternative policy is {H}")
 
-#IGEN CHAT BESKRIVELSER
 #Question 4: we are finding the optimal Delta value that maximizes the 
 # value of H. The function negative_H(Delta) calculates the average value 
 # of H for a given Delta value. It iterates through the shock series and 
