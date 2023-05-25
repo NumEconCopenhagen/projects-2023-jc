@@ -15,7 +15,7 @@ tau = 0.3
 G_values = [1.0, 2.0]
 w_values = np.linspace(0.1, 2.0, 100)  # Create a range of w values
 tau_values = np.linspace(0.1, 0.9, 100)  # Create a range of tau values
-sigma_values = [0.001, 1.5]
+sigma_values = [1.001, 1.5]
 rho_values = [1.001, 1.5]
 epsilon = 1.0
 
@@ -89,16 +89,15 @@ plt.show
 # The negative_utility function is defined because minimize 
 # finds the minimum of a function, and we want to find the maximum utility.
 
-
 # Define the new utility function
 def utility(L, G, alpha, sigma, rho, v, epsilon):
     C = kappa + (1 + tau) * w * L
-    return ((alpha * C**((sigma - 1) / sigma) + (1 - alpha) * G**((sigma - 1) / sigma))**((1 - rho) / sigma) - 1) / (1 - rho) - v * L**(1 + epsilon) / (1 + epsilon)
+    return (((alpha * C**((sigma - 1) / sigma) + (1 - alpha) * G**((sigma-1) / (sigma)))**((sigma / (sigma-1)))**((1 - rho)) - 1) / (1 - rho)) - v * L**(1 + epsilon) / (1 + epsilon)
 
 # Define the function for the equilibrium condition
 def equilibrium(G, w_tilde, alpha, sigma, rho, v, epsilon):
     L = optimal_labor_supply(w_tilde, kappa, alpha, v)
-    return G - tau * w * L
+    return G - tau * w_tilde * L
 
 # Question 5: Find the G that solves the equilibrium condition
 for sigma, rho in zip(sigma_values, rho_values):
