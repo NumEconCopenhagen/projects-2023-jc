@@ -310,19 +310,10 @@ for k in range(K):
         if res.fun < optimal_value:
             optimal_value = res.fun
             optimal_solution = res.x
-
-            #We iterate underlined_K times.
-            #In each iteration, we first draw a random vector x0 uniformly within the chosen bounds.
-            #If the iteration count k is less than K, we proceed with the optimizer and run it with x0 as the initial guess (Step E). The result x^(k*) is obtained from the optimizer.
-            #Then, we set x^* to be equal to x^(k*) if it's the first iteration (i.e., k=0) or if the function value of the new result f(x^(k*)) is less than the function value of our current best solution f(x^*) (Step F).
-            #If k is not less than K, we skip the optimization step (Steps E and F) and continue with the next iteration.
-            #We repeat these steps until we have completed underlined_K iterations.
-            #Finally, we print out the optimal solution and the optimal value.
             
         # G. If f(x^*) < τ, go to step 4.
         if optimal_value < τ:
             break
-
 # 4. Return the result x^*.
 print("Optimal solution:", optimal_solution)
 print("Optimal value:", optimal_value)
@@ -332,3 +323,13 @@ for i, guess in enumerate(initial_guesses):
     print("Iteration {}, initial guess: {}".format(i, guess))
 
 
+#We iterate underlined_K times.
+#In each iteration, we first draw a random vector x0 uniformly within the chosen bounds.
+#If the iteration count k is less than K, we proceed with the optimizer and run it with x0 as the initial guess (Step E). The result x^(k*) is obtained from the optimizer.
+#Then, we set x^* to be equal to x^(k*) if it's the first iteration (i.e., k=0) or if the function value of the new result f(x^(k*)) is less than the function value of our current best solution f(x^*) (Step F).
+#If k is not less than K, we skip the optimization step (Steps E and F) and continue with the next iteration.
+#We repeat these steps until we have completed underlined_K iterations.
+#Further we print out the optimal solution and the optimal value.
+#Finally, we use the funciton break, which will lead us directly to 4, if f(x^*) < tau
+
+#the optimal solution found suggests that when $x_1$ is approximately -50.24035172 and $x_2$ is approximately 35.50754101, the Griewank function is at its minimum within the defined bounds and given the initial guesses and tolerances.
