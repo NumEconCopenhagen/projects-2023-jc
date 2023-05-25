@@ -28,17 +28,23 @@ def optimal_labor_supply(w_tilde, kappa, alpha, v):
 # Calculate optimal labor supply for each G
 for G in G_values:
     L_star = optimal_labor_supply(w_tilde, kappa, alpha, v)
-    
 
 # Define the utility function
 def utility(L, G, alpha, v):
     return np.log(L**alpha * G**(1 - alpha)) - v * L**2 / 2
 
 # Question 4: Find the socially optimal tax rate tau* maximizing worker utility
+
+# Define a function to calculate the negative utility given a tax rate tau
 def negative_utility(tau):
+    # Calculate the modified wage variable w_tilde using the tax rate tau
     w_tilde = (1 - tau) * w
+    # Calculate the optimal labor supply given the modified wage variable and other parameters
     L = optimal_labor_supply(w_tilde, kappa, alpha, v)
-    return -utility(L, G, alpha, v)
+    # Calculate the utility value given the optimal labor supply, G, and other parameters
+    utility_value = utility(L, G, alpha, v)
+    # Return the negative utility value to be minimized
+    return -utility_value
 
 #Question 5-6
 
@@ -53,12 +59,23 @@ def equilibrium(G, w_tilde, alpha, sigma, rho, v, epsilon):
     return G - tau * w_tilde * L
 
 #
+# Define a function to calculate the negative utility with equilibrium given a tax rate tau and other parameters
 def negative_utility_with_equilibrium(tau, w, alpha, sigma, rho, v, epsilon):
+    # Calculate the modified wage variable w_tilde using the tax rate tau
     w_tilde = (1 - tau) * w
+    # Calculate the production factor G using the equilibrium condition
     G = fsolve(equilibrium, 1.0, args=(w_tilde, alpha, sigma, rho, v, epsilon))
+    # Calculate the optimal labor supply given the modified wage variable and other parameters
     L = optimal_labor_supply(w_tilde, kappa, alpha, v)
-    return -utility_1(L, G, alpha, sigma, rho, v, epsilon)
+    # Calculate the utility value given the optimal labor supply, G, and other parameters
+    utility_value = utility_1(L, G, alpha, sigma, rho, v, epsilon)
+    # Return the negative utility value to be minimized
+    return -utility_value
 
+#we define the functions negative_utility() and negative_utility_with_equilibrium()  
+# to find the socially optimal tax rate that maximizes worker utility. 
+# To achieve this, the utility function is multiplied by -1, making it a negative utility. 
+# By minimizing the negative utility, we are  maximizing the original utility function.
 
 #Problem 2
 
@@ -90,20 +107,33 @@ kappa_series_2 = np.exp(rho_2 * np.log(np.append(np.ones((K_2, 1)), np.exp(epsil
 def policy(l_prev, l_star, Delta):
     return l_star if abs(l_prev - l_star) > Delta * abs(l_prev) else l_prev
 
-#
+# Define a function to calculate the negative value of H (mean of H_values)
 def negative_H(Delta):
+    # Create an empty list to store the values of H
     H_values = []
+    # Iterate over each value of k (rows) in the kappa_series_2 array
     for k in range(K_2):
+        # Get the kappa_k values for the current row
         kappa_k = kappa_series_2[k, :]
+        # Calculate the optimal labor supply for the initial period
         l_prev = optimal_labor_supply_2(kappa_k[0], eta_2, w_2)
+        # Calculate the total profit for the initial period
         total_profit = profits_2(kappa_k[0], l_prev, eta_2, w_2)
+        # Iterate over each value of t (columns) in the kappa_series_2 array (excluding the first column)
         for t in range(1, T_2):
+            # Calculate the optimal labor supply for the current period
             l_star = optimal_labor_supply_2(kappa_k[t], eta_2, w_2)
+            # Calculate the policy-based labor supply for the current period using the policy() function and the given Delta
             l = policy(l_prev, l_star, Delta)
+            # Calculate the profit for the current period and update the total profit
             total_profit += R_2**(-t) * (profits_2(kappa_k[t], l, eta_2, w_2) - (l != l_prev) * iota_2)
+            # Update the previous labor supply with the current labor supply
             l_prev = l
+        # Append the total profit to the H_values list
         H_values.append(total_profit)
+    # Calculate the negative mean of H_values and return it
     return -np.mean(H_values)
+
 
 # Here, I suggest a policy that hires or fires only if the difference between l_prev and l_star is greater than Delta * l_star instead of Delta * l_prev.
 def alternative_policy(l_prev, l_star, Delta):
@@ -112,10 +142,20 @@ def alternative_policy(l_prev, l_star, Delta):
 #Problem 3
 
 # Define the Griewank function
-def griewank(x): 
-    A = np.sum(x**2 / 4000)
-    B = np.prod(np.cos(x / np.sqrt(np.arange(1, len(x) + 1))))
-    return A - B + 1
+# Define the Griewank function
+def griewank(x):
+    """
+    Calculate the value of the Griewank function for a given input vector x.
+    This function evaluates the Griewank function using a specific formula.
+    Args:
+        x (array-like): Input vector
+    Returns:
+        float: Value of the Griewank function
+    """
+    A = np.sum(x**2 / 4000)  # Calculate the first term of the Griewank function
+    B = np.prod(np.cos(x / np.sqrt(np.arange(1, len(x) + 1))))  # Calculate the second term of the Griewank function
+    return A - B + 1  # Return the value of the Griewank function
+
 
 # Bounds for x and tolerance τ > 0.
 bounds = [(-600, 600), (-600, 600)]
@@ -147,14 +187,6 @@ for k in range(K_3):
         if res.fun < optimal_value_3:
             optimal_value_3 = res.fun
             optimal_solution_3 = res.x
-
-            #We iterate underlined_K times.
-            #In each iteration, we first draw a random vector x0 uniformly within the chosen bounds.
-            #If the iteration count k is less than K, we proceed with the optimizer and run it with x0 as the initial guess (Step E). The result x^(k*) is obtained from the optimizer.
-            #Then, we set x^* to be equal to x^(k*) if it's the first iteration (i.e., k=0) or if the function value of the new result f(x^(k*)) is less than the function value of our current best solution f(x^*) (Step F).
-            #If k is not less than K, we skip the optimization step (Steps E and F) and continue with the next iteration.
-            #We repeat these steps until we have completed underlined_K iterations.
-            #Finally, we print out the optimal solution and the optimal value.
             
         # G. If f(x^*) < τ, go to step 4.
         if optimal_value_3 < τ_3:
